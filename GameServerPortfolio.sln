@@ -1,0 +1,57 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemoryPool", "projects\memory-pool\MemoryPool.vcxproj", "{381A6AEF-74F3-405F-818B-85B739B32B84}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LockFreeQueue", "projects\lock-free-queue\LockFreeQueue.vcxproj", "{D1CD15A3-3473-4FF6-848C-D9B8191A423A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiThreadChatServer", "projects\multithread-chat-server\Server\002_Multi_Thread_Chating_Server.vcxproj", "{0CFF5821-A74D-4A89-B936-327E13B33F71}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthenticatedChatServer", "projects\login-chat-system\ChatServer\002_Multi_Thread_Chating_Server.vcxproj", "{7DF04D64-FDCF-476A-8AE5-C607DF6A79C0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoginServer", "projects\login-chat-system\LoginServer\003_Login_Server.vcxproj", "{A10C17C5-BBBD-4EE7-9D59-8404A0B27B8C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DBServer", "projects\login-chat-system\DBServer\DBServer.vcxproj", "{34EB32F9-E791-43A6-81CF-3A05FE0509F8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GroupEchoServer", "projects\group-echo-server\Server\004_Echo_Group_Server.vcxproj", "{BA72F37E-0415-45CB-BEFE-A1E5EB0D5660}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{381A6AEF-74F3-405F-818B-85B739B32B84}.Debug|x64.ActiveCfg = Debug|x64
+		{381A6AEF-74F3-405F-818B-85B739B32B84}.Debug|x64.Build.0 = Debug|x64
+		{381A6AEF-74F3-405F-818B-85B739B32B84}.Release|x64.ActiveCfg = Release|x64
+		{381A6AEF-74F3-405F-818B-85B739B32B84}.Release|x64.Build.0 = Release|x64
+		{D1CD15A3-3473-4FF6-848C-D9B8191A423A}.Debug|x64.ActiveCfg = Debug|x64
+		{D1CD15A3-3473-4FF6-848C-D9B8191A423A}.Debug|x64.Build.0 = Debug|x64
+		{D1CD15A3-3473-4FF6-848C-D9B8191A423A}.Release|x64.ActiveCfg = Release|x64
+		{D1CD15A3-3473-4FF6-848C-D9B8191A423A}.Release|x64.Build.0 = Release|x64
+		{0CFF5821-A74D-4A89-B936-327E13B33F71}.Debug|x64.ActiveCfg = Debug|x64
+		{0CFF5821-A74D-4A89-B936-327E13B33F71}.Debug|x64.Build.0 = Debug|x64
+		{0CFF5821-A74D-4A89-B936-327E13B33F71}.Release|x64.ActiveCfg = Release|x64
+		{0CFF5821-A74D-4A89-B936-327E13B33F71}.Release|x64.Build.0 = Release|x64
+		{7DF04D64-FDCF-476A-8AE5-C607DF6A79C0}.Debug|x64.ActiveCfg = Debug|x64
+		{7DF04D64-FDCF-476A-8AE5-C607DF6A79C0}.Debug|x64.Build.0 = Debug|x64
+		{7DF04D64-FDCF-476A-8AE5-C607DF6A79C0}.Release|x64.ActiveCfg = Release|x64
+		{7DF04D64-FDCF-476A-8AE5-C607DF6A79C0}.Release|x64.Build.0 = Release|x64
+		{A10C17C5-BBBD-4EE7-9D59-8404A0B27B8C}.Debug|x64.ActiveCfg = Debug|x64
+		{A10C17C5-BBBD-4EE7-9D59-8404A0B27B8C}.Debug|x64.Build.0 = Debug|x64
+		{A10C17C5-BBBD-4EE7-9D59-8404A0B27B8C}.Release|x64.ActiveCfg = Release|x64
+		{A10C17C5-BBBD-4EE7-9D59-8404A0B27B8C}.Release|x64.Build.0 = Release|x64
+		{34EB32F9-E791-43A6-81CF-3A05FE0509F8}.Debug|x64.ActiveCfg = Debug|x64
+		{34EB32F9-E791-43A6-81CF-3A05FE0509F8}.Debug|x64.Build.0 = Debug|x64
+		{34EB32F9-E791-43A6-81CF-3A05FE0509F8}.Release|x64.ActiveCfg = Release|x64
+		{34EB32F9-E791-43A6-81CF-3A05FE0509F8}.Release|x64.Build.0 = Release|x64
+		{BA72F37E-0415-45CB-BEFE-A1E5EB0D5660}.Debug|x64.ActiveCfg = Debug|x64
+		{BA72F37E-0415-45CB-BEFE-A1E5EB0D5660}.Debug|x64.Build.0 = Debug|x64
+		{BA72F37E-0415-45CB-BEFE-A1E5EB0D5660}.Release|x64.ActiveCfg = Release|x64
+		{BA72F37E-0415-45CB-BEFE-A1E5EB0D5660}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

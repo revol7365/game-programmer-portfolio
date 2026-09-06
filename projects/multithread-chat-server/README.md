@@ -31,6 +31,25 @@ Release로 제공된 Redis 정적 라이브러리와 Debug CRT/iterator ABI가 �
 
 공식 cpp_redis 4.3.1/tacopie 3.2.0을 공용 `third_party`에서 참조하고 Debug/Release x64를 통과했습니다. Release probe에서 16 login, 16 sector move, 256 chat response를 검증했습니다.
 
+## 과거 Content Thread 비교 실험
+
+Error Tracking 기록에서 로그를 줄인 뒤에도 장시간 지연이 남아, 단일 Content Queue의 직렬 처리를 병목 후보로 두었습니다. 동일 장비와 동일한 더미 클라이언트 설정에서 Content Thread 수만 1개에서 4개로 바꿔 비교했습니다.
+
+4개 구성은 `CONTENT_THREAD_CNT = 4`와 `SessionID % 4`로 담당 Thread를 고정하고, Join·Leave·Recv Job을 네 IOCP Queue에 분산했습니다. 같은 세션의 작업 순서는 한 Thread 안에서 유지했습니다.
+
+| 접속 수 | 구성 | Accept TPS | Recv TPS | Send TPS | 더미 평균 응답(ms) |
+| ---: | --- | ---: | ---: | ---: | --- |
+| 5,000 | Single | 2,677 | 23,068 | 111,075 | 58 |
+| 5,000 | Multi | 1,399 | 57,838 | 191,765 | 6 |
+| 10,000 | Single | 2,906 | 10,010 | 49,776 | 370 / 540 |
+| 10,000 | Multi | 1,790 | 71,828 | 281,873 | 7 / 6 |
+| 15,000 | Single | 2,282 | 5,239 | 24,267 | 285 / 1,193 / 1,188 |
+| 15,000 | Multi | 4,451 | 122,064 | 986,477 | 10 / 7 / 3 |
+
+동일 조건의 Multi 구성에서 TPS가 높아지고 평균 응답 지연이 낮아졌습니다. 단일 Content Queue의 직렬 처리가 병목에 영향을 주고 있음을 확인했습니다. 대신 `SessionID % 4` 방식은 Thread별 부하가 고르게 분산된다는 보장이 없다는 비용이 남습니다.
+
+수치는 학습 당시 직접 작성한 [원본 테스트 기록](https://github.com/user-attachments/files/31890366/default.xlsx)입니다. 동일 장비에서 비교했지만 세부 하드웨어 사양, 측정 시간과 반복 횟수는 기록이 남아 있지 않아 현재 환경의 성능 보증값이나 고정된 개선 배수로 사용하지 않습니다.
+
 ## 빌드 및 실행 방법
 
 ```powershell

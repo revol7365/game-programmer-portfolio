@@ -76,7 +76,7 @@ void GroupServer::OnClientLeave(uint64_t sessionID)
     ReleaseSRWLockExclusive(&mPlayerMapLock);
 
     if (player && player->mGroup.load(std::memory_order_acquire) == nullptr) {
-        // 그룹이 nullptr 이라면 어디로도 보낼 수 없음 — 직접 Free (안전 폴백)
+        // 그룹이 nullptr 이라면 어디로도 보낼 수 없음 — 직접 Free (예외 경로)
         Player::playerMemoryPool.Free(player);
     }
 }

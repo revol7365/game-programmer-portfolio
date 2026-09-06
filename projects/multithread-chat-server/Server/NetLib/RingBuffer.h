@@ -234,7 +234,7 @@ public:
 		requires std::same_as<T, char>
 	{
 
-		// 1. 남는 공간 확인
+		// 남는 공간 확인
 		int freeSize = GetFreeSize();
 		if (freeSize <= 0) {
 			// 공간이 없으면 0개 반환
@@ -243,17 +243,17 @@ public:
 			return 0;
 		}
 
-		// 2. 끊히지 않는 연속된 길이
+		// 끊히지 않는 연속된 길이
 		int segment1_len = DirectEnqueueSize();
 		if (segment1_len > freeSize) {
 			segment1_len = freeSize;
 		}
 
-		// 3. 첫번째 부분 설정
+		// 첫번째 부분 설정
 		wsaBufArray[0].buf = GetRearBufferPtr();
 		wsaBufArray[0].len = (ULONG)segment1_len;
 
-		// 4. 두번째 부분 설정
+		// 두번째 부분 설정
 		int segment2_len = freeSize - segment1_len;
 
 		if (segment2_len > 0) {
@@ -272,7 +272,7 @@ public:
 	int GetDequeueSegments(WSABUF* wsaBufArray)
 		requires std::same_as<T, char>
 	{
-		// 1. 현재 사용 중인 데이터의 총량 확인
+		// 현재 사용 중인 데이터의 총량 확인
 		int useSize = GetUseSize();
 		if (useSize <= 0) {
 			// 읽을 데이터가 없으면 0개 반환
@@ -281,7 +281,7 @@ public:
 			return 0;
 		}
 
-		// 2. DirectDequeueSize: 현재 front부터 버퍼 끝까지의 연속된 길이 (L1)
+		// DirectDequeueSize: 현재 front부터 버퍼 끝까지의 연속된 길이 (L1)
 		int segment1_len = DirectDequeueSize();
 
 		// segment1_len이 GetUseSize()보다 클 수 없습니다.

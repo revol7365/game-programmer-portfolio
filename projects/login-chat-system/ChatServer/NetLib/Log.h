@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 
-// 1. 클래스 이름을 CLog로 변경하여 매크로와 겹치지 않게 합니다.
+
 class CLog
 {
 private:
@@ -79,6 +79,6 @@ public:
     }
 };
 
-// 2. 매크로 이름은 LOG, 호출하는 클래스는 CLog로 명확히 구분합니다.
+
 #define LOG(fmt, ...) CLog::GetInstance().Write(fmt, ##__VA_ARGS__)
 //#define LOG(fmt, ...) ""

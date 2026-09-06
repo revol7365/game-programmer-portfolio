@@ -134,7 +134,7 @@ protected:
         Group* cur = player->mGroup.load(std::memory_order_acquire);
         if (cur != this) {
             if (cur) cur->Enqueue({ JobType::LEAVE, player, nullptr });
-            else Player::playerMemoryPool.Free(player); // 안전 폴백
+            else Player::playerMemoryPool.Free(player); // 예외 경로
             return;
         }
         auto it = mPlayers.find(player->GetSessionID());

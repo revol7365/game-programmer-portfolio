@@ -158,7 +158,7 @@ void BaseServer::Stop()
 
 bool BaseServer::DisConnect(const uint64_t sessionID, DisconnectReason reason)
 {
-    // 1. 세션 찾기 (여기서 ID 검증이 이루어짐)
+    // 세션 ID 검증
     Session* session = BaseServer::findSession(sessionID);
     if (session == nullptr) return false;
 
@@ -190,7 +190,7 @@ bool BaseServer::SendPacket(const uint64_t sessionID, Packet* packet)
         return false;
     }
 
-    // 2. DCLP 암호화 로직 (Perfect)
+    // DCLP 암호화 로직
     if (!packet->GetIsEncoding())
     {
         packet->Lock();
@@ -223,7 +223,7 @@ bool BaseServer::SendPacket(const uint64_t sessionID, Packet* packet)
         packet->Unlock();
     }
 
-    // 3. 링버퍼 투입 및 전송
+    // 링버퍼 투입 및 전송
     packet->AddRef();
     EnterCriticalSection(&session->sessionSendRingBuffer_cs);
     bool enqueued = session->sendRingBuffer.EnqueueItem(packet);
@@ -239,7 +239,7 @@ bool BaseServer::SendPacket(const uint64_t sessionID, Packet* packet)
 
     bool isSuccess = postSend(session);
 
-    // 4. 참조 해제 (여기서 세션이 파괴될 수도 있음)
+    // 참조 해제 (여기서 세션이 파괴될 수도 있음)
     BaseServer::decreaseSessionIoCount(session);
 
     if (isSuccess) {
@@ -283,7 +283,7 @@ bool BaseServer::listenSocketInit()
 
 Session* BaseServer::createSession()
 {
-    // 1. Session 배열 index 추출
+    // Session 배열 index 추출
     EnterCriticalSection(&mSessionEmptyStackCs);
 
     if (mSessionEmptyIndexStack.empty())
@@ -305,7 +305,7 @@ Session* BaseServer::createSession()
     }
     LeaveCriticalSection(&mSessionEmptyStackCs);
 
-    // 2. ID 설정 및 생성
+    // ID 설정 및 생성
     // 상위 16비트는 index, 하위 48비트는 고유번호(++mSessionID)
     uint64_t unique = mSessionID.fetch_add(1);
     uint64_t sessionId = ((uint64_t)index << 48) | (unique & 0x0000FFFFFFFFFFFFULL);
@@ -501,13 +501,13 @@ void BaseServer::releaseSession(Session* session)
 
     uint64_t sessionID = session->id;
 
-    // 1. 소켓 즉시 차단 (추가적인 I/O 유입 방지)
+    // 소켓 즉시 차단 (추가적인 I/O 유입 방지)
     if (session->socket != INVALID_SOCKET) {
         closesocket(session->socket);
         session->socket = INVALID_SOCKET;
     }
 
-    // 2. 상위 어플리케이션에 알림
+    // 상위 어플리케이션에 알림
     // 세션 인덱스가 풀에 돌아가기 전에 어플리케이션 정리를 끝내야 안전
     OnClientLeave(sessionID);
     int prevCount = mSessionCount.fetch_sub(1);
@@ -517,7 +517,7 @@ void BaseServer::releaseSession(Session* session)
         __debugbreak();
     }
 
-    // 3. 버퍼 및 미전송 패킷 정리
+    // 버퍼 및 미전송 패킷 정리
     EnterCriticalSection(&session->sessionSendRingBuffer_cs);
     while (session->sendRingBuffer.GetUseSize() > 0) {
         Packet* packet = nullptr;
@@ -527,14 +527,14 @@ void BaseServer::releaseSession(Session* session)
     }
     LeaveCriticalSection(&session->sessionSendRingBuffer_cs);
 
-    // 4. 세션 데이터 초기화
+    // 세션 데이터 초기화
     session->recvRingBuffer.ClearBuffer();
     session->sendRingBuffer.ClearBuffer();
     session->id = 0;
     session->state = ESessionState::Free;
     session->sendFlag.store(0);
 
-    // 5. 마지막에 인덱스 반납 (이제 재사용 가능)
+    // 마지막에 인덱스 반납 (이제 재사용 가능)
     int index = (int)(sessionID >> 48);
     EnterCriticalSection(&mSessionEmptyStackCs);
     mSessionEmptyIndexStack.push(index);
@@ -561,7 +561,7 @@ void BaseServer::acceptThread()
             continue;
         }
 
-        // 1. 세션 생성
+        // 세션 생성
         LINGER optval{};
         optval.l_onoff = 1;
         optval.l_linger = 0;
@@ -593,13 +593,13 @@ void BaseServer::acceptThread()
 
         char ipStr[INET_ADDRSTRLEN];
 
-        // 2. inet_ntop 함수로 주소를 문자열로 변환합니다.
+        // inet_ntop 함수로 주소를 문자열로 변환합니다.
         inet_ntop(AF_INET,           // 주소 체계 (IPv4)
             &clientAddr.sin_addr, // 변환할 주소 구조체 포인터
             ipStr,               // 결과를 저장할 버퍼
             INET_ADDRSTRLEN);    // 버퍼의 크기
 
-        // 2. IOCP 등록 (Key를 Session 포인터로 지정)
+        // IOCP 등록 (Key를 Session 포인터로 지정)
         if (CreateIoCompletionPort((HANDLE)clientSock, mWorkerThreadHandle, (ULONG_PTR)newSession, 0) == NULL)
         {
             LOG(L"CreateIoCompletionPort failed: %d \n", WSAGetLastError());
@@ -609,7 +609,7 @@ void BaseServer::acceptThread()
 
         OnClientJoin(newSession->id);
 
-        // 3. 최초 Recv 요청 (Session 내부 함수로 대체)
+        // 최초 Recv 요청 (Session 내부 함수로 대체)
         if (!postRecv(newSession))
         {
             LOG(L"[Accept] postRecv FAILED - releasing session. sessionID: %llu\n", newSession->id);
@@ -646,7 +646,7 @@ void BaseServer::workerThread()
 
         OverlappedBase* pOv = CONTAINING_RECORD(pOverlapped, OverlappedBase, overlapped);
 
-        // 1. 에러 체크
+        // 에러 체크
         if (ret == FALSE) {
             int err = GetLastError();
             // LOG(L"[GQCS] Client force closed sessionID:%llu err:%d", session->id, err);
@@ -655,7 +655,7 @@ void BaseServer::workerThread()
             continue;
         }
 
-        // 2. 정상 종료 체크 (RECV에서 cbTransferred == 0)
+        // 정상 종료 체크 (RECV에서 cbTransferred == 0)
         if (pOv->type == EOperation::RECV && cbTransferred == 0) {
             // LOG(L"[GQCS FIN] Client disconnected\n");
             requestRelease(session, DisconnectReason::PeerClose);
@@ -768,7 +768,7 @@ void BaseServer::workerThread()
 
             static_assert(offsetof(SendOverlapped, overlapped) == 0);
 
-            // 2. sendFlag off → 보낼 게 남아있으면 다시 send
+            // sendFlag off → 보낼 게 남아있으면 다시 send
             session->sendFlag.store(0);
             postSend(session);
 
@@ -782,7 +782,7 @@ void BaseServer::workerThread()
             continue; // ioCount는 이미 0이므로 decreaseSessionIoCount 스킵
         }
         }
-        // 3. 완료된 I/O 작업에 대한 참조 카운트 감소
+        // 완료된 I/O 작업에 대한 참조 카운트 감소
         decreaseSessionIoCount(session);
     }
 }
@@ -861,7 +861,7 @@ void BaseServer::ServerControll()
 
 void BaseServer::printUpTime()
 {
-    // 1. 현재 시간 구하기
+    // 현재 시간 구하기
     time_t rawtime;
     struct tm timeinfo;
     wchar_t buffer[80];
@@ -870,7 +870,7 @@ void BaseServer::printUpTime()
     localtime_s(&timeinfo, &rawtime);
     wcsftime(buffer, 80, L"%Y-%m-%d %H:%M:%S", &timeinfo);
 
-    // 2. 업타임(가동 시간) 구하기
+    // 업타임(가동 시간) 구하기
     DWORD dwCurrentTime = timeGetTime();
     DWORD dwUpTime = dwCurrentTime - dwServerStartTime; // 흐른 시간 (ms)
 

@@ -17,7 +17,7 @@ struct PACKET_HEADER {
 #pragma pack(pop)
 
 
-// 1. 우리가 허용할 타입의 조건을 정의합니다.
+// 우리가 허용할 타입의 조건을 정의합니다.
 template <typename T>
 concept PacketData = (std::is_arithmetic_v<T> || std::is_trivially_copyable_v<T>) && !std::is_pointer_v<T>;
 
@@ -113,7 +113,7 @@ public:
         LeaveCriticalSection(&encodingCS);
     }
 
-    // 2. operator<< 에 concept 적용
+    // operator<< 에 concept 적용
     template <PacketData T>
     inline Packet& operator<<(T value) {
         // 버퍼 오버플로우 체크 (필수!)
@@ -127,7 +127,7 @@ public:
         return *this;
     }
 
-    // 3. operator>> 에 concept 적용
+    // operator>> 에 concept 적용
     template <PacketData T>
     inline Packet& operator>>(T& value) {
         if (mReadPos + sizeof(T) > static_cast<size_t>(mDataSize)) {
@@ -150,7 +150,7 @@ public:
         mReadPos += size;
     }
 
-    // 5. 데이터 직접 꺼내기 (문자열 등 추출용)
+    // 데이터 직접 꺼내기 (문자열 등 추출용)
     // 현재 mReadPos 위치에서 지정한 size만큼 데이터를 dest로 복사합니다.
     inline int GetData(void* dest, int size) {
         if (mReadPos + size > mDataSize) {

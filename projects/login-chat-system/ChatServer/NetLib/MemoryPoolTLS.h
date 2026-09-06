@@ -127,7 +127,7 @@ public:
 		ThreadData& myData = s_threadData[_poolIdx][tidx];
 		Node* oldNode = myData.local.top;
 
-		// 1. TLS 풀
+		// TLS 풀
 		if (oldNode) {
 			myData.local.top = oldNode->nextNode;
 			myData.local.count--;
@@ -135,7 +135,7 @@ public:
 			return &oldNode->data;
 		}
 
-		// 2. 내 Batch 풀
+		// 내 Batch 풀
 		int count = 0;
 		Node* batch = PopBatchFromMyBatch(count);
 		if (batch) {
@@ -146,7 +146,7 @@ public:
 			return &oldNode->data;
 		}
 
-		// 3. 다른 스레드에서 훔치기
+		// 다른 스레드에서 훔치기
 		Node* stolen = StealBatch();
 		if (stolen) {
 			oldNode = stolen;
@@ -172,7 +172,7 @@ public:
 			return &oldNode->data;
 		}
 
-		// 4. Global Pool에서 가져오기
+		// Global Pool에서 가져오기
 		{
 			int globalCount = 0;
 			Node* globalBatch = PopFromGlobal(globalCount);
@@ -185,7 +185,7 @@ public:
 			}
 		}
 
-		// 5. 새로 생성
+		// 새로 생성
 		ReserveNodes(MOVENODESIZE);
 		oldNode = myData.local.top;
 		if (!oldNode) return nullptr;
@@ -203,13 +203,13 @@ public:
 		size_t offset = offsetof(Node, data);
 		Node* freeNode = reinterpret_cast<Node*>(reinterpret_cast<char*>(returnData) - offset);
 
-		// 1. 필터링
+		// 필터링
 		if (freeNode == nullptr) return false;
 		//if (this != freeNode->securityCookie) return false;
 		//if (freeNode->underFlowGuard != 0xFFFFFFFF) return false;
 		//if (freeNode->overFlowGuard != 0xFFFFFFFF) return false;
 
-		// 2. 풀에 반납
+		// 풀에 반납
 		int tidx = GetThreadIdx();
 		ThreadData& myData = s_threadData[_poolIdx][tidx];
 

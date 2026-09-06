@@ -227,7 +227,7 @@ bool ChatServer::login(Player& player, Packet* packet)
 	}
 
 
-	// 1. Player 정보 설정
+	// Player 정보 설정
 	player.SetAccountNo(accountNo);
 	player.SetID(id);
 	player.SetNickName(nickName);
@@ -306,12 +306,12 @@ bool ChatServer::sendChatMessage(Player& player, Packet* packet)
 		return false;
 	}
 
-	// 1. 변수 선언
+	// 변수 선언
 	uint64_t accountNo;
 	WORD  messageLen;
 	WCHAR message[512] = { 0, }; // 최대 512자 제한 (버퍼 넉넉히)
 
-	// 2. 데이터 추출
+	// 데이터 추출
 	*packet >> accountNo;   // AccountNo (8바이트)
 	*packet >> messageLen;  // MessageLen (2바이트, 바이트 단위)
 
@@ -353,7 +353,7 @@ bool ChatServer::sendChatMessage(Player& player, Packet* packet)
 		return false;
 	}
 	resPacket->Init();
-	// 4. Packet 생성
+	// Packet 생성
 	ChatPacket::MakeChatResMessage(resPacket, player.GetAccountNo(), player.GetID(),
 		player.GetNickName(), messageLen, message);
 
@@ -461,7 +461,7 @@ Player* ChatServer::findPlayer(uint64_t sessionId)
 void ChatServer::broadcast(Player& player, Packet* pPacket) {
 	PERF_TIMER(broadcast);
 
-	// 1. 섹터 범위 유효성 체크
+	// 섹터 범위 유효성 체크
 	int sectorX = player.GetSectorX();
 	int sectorY = player.GetSectorY();
 
@@ -469,7 +469,7 @@ void ChatServer::broadcast(Player& player, Packet* pPacket) {
 		return;
 	}
 
-	// 2. Lock 안에서는 세션 ID만 수집 (Lock 보유 시간 최소화)
+	// Lock 안에서는 세션 ID만 수집 (Lock 보유 시간 최소화)
 	thread_local std::vector<uint64_t> targets;
 	targets.clear();
 
@@ -493,7 +493,7 @@ void ChatServer::broadcast(Player& player, Packet* pPacket) {
 		ReleaseSRWLockShared(&mSector[ty][tx].lock);
 	}
 
-	// 3. Lock 밖에서 SendPacket (Lock 중첩 방지)
+	// Lock 밖에서 SendPacket (Lock 중첩 방지)
 	{
 		PERF_TIMER(sendLoop);
 		for (uint64_t sid : targets) {

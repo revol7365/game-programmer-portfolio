@@ -18,7 +18,7 @@ namespace GroupPacket {
         *pPacket << type;
     }
 
-    // 1. 로그인 응답 (Server -> Client)
+    // 로그인 응답 (Server -> Client)
     inline void MakeGameResLogin(Packet* pPacket, BYTE status, INT64 accountNo) {
         InitPacket(pPacket, en_PACKET_CS_GAME_RES_LOGIN);
 
@@ -26,7 +26,7 @@ namespace GroupPacket {
         *pPacket << accountNo;
     }
 
-    // 2. 에코 응답 (Server -> Client) - REQ를 그대로 돌려줌
+    // 에코 응답 (Server -> Client) - REQ를 그대로 돌려줌
     inline void MakeGameResEcho(Packet* pPacket, INT64 accountNo, LONGLONG sendTick) {
         InitPacket(pPacket, en_PACKET_CS_GAME_RES_ECHO);
 

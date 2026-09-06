@@ -21,7 +21,7 @@ namespace ChatPacket {
         *pPacket << type;           // 패킷 타입 (Payload 시작)
     }
 
-    // 1. 로그인 응답 (Server -> Client)
+    // 로그인 응답 (Server -> Client)
     inline void MakeChatResLogin(Packet* pPacket, BYTE status, INT64 accountNo) {
         InitPacket(pPacket, en_PACKET_CS_CHAT_RES_LOGIN);
 
@@ -29,7 +29,7 @@ namespace ChatPacket {
         *pPacket << accountNo;
     }
 
-    // 2. 섹터 이동 결과
+    // 섹터 이동 결과
     inline void MakeChatSectorMove(Packet* pPacket, INT64 accountNo, WORD sectorX, WORD sectorY) {
         InitPacket(pPacket, en_PACKET_CS_CHAT_RES_SECTOR_MOVE);
 
@@ -38,15 +38,15 @@ namespace ChatPacket {
         *pPacket << sectorY;
     }
 
-    // 3. 채팅 보내기 응답 / 브로드캐스트 (Server -> Client)
+    // 채팅 보내기 응답 / 브로드캐스트 (Server -> Client)
     inline void MakeChatResMessage(Packet* pPacket, INT64 accountNo, const WCHAR* id, const WCHAR* nickname, WORD messageLen, const WCHAR* message) {
-        // 1. 패킷 초기화
+        // 패킷 초기화
         InitPacket(pPacket, en_PACKET_CS_CHAT_RES_MESSAGE);
 
-        // 2. 고정 크기 데이터 넣기
+        // 고정 크기 데이터 넣기
         *pPacket << accountNo;
 
-        // 3. ID 및 Nickname 처리 (항상 40바이트 고정 크기 확보)
+        // ID 및 Nickname 처리 (항상 40바이트 고정 크기 확보)
         WCHAR tempId[20] = { 0, };
         WCHAR tempNick[20] = { 0, };
 
@@ -57,7 +57,7 @@ namespace ChatPacket {
         pPacket->PutData(tempId, sizeof(tempId));     // 40바이트
         pPacket->PutData(tempNick, sizeof(tempNick)); // 40바이트
 
-        // 4. 가변 길이 메시지 처리
+        // 가변 길이 메시지 처리
         *pPacket << messageLen;
         if (messageLen > 0 && message != nullptr) {
             pPacket->PutData(message, messageLen);
@@ -65,7 +65,7 @@ namespace ChatPacket {
 
     }
 
-    // 4. 하트비트 요청
+    // 하트비트 요청
     inline void MakeChatReqHeartbeat(Packet* pPacket) {
         InitPacket(pPacket, en_PACKET_CS_CHAT_REQ_HEARTBEAT);
     }

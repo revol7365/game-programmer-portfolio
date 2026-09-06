@@ -147,22 +147,22 @@ public:
 
     bool Init()
     {
-        // 1. 소켓 및 ID 초기화
+        // 소켓 및 ID 초기화
         this->socket = INVALID_SOCKET;
         this->id = 0; // 세션 ID도 반드시 초기화
 
-        // 2. 통합된 control 변수 초기화 (ioCount = 0, releaseFlag = 0)
+        // 통합된 control 변수 초기화 (ioCount = 0, releaseFlag = 0)
         // 64비트 전체를 0으로 만들면 두 플래그가 동시에 초기화
         control.store(0);
 
-        // 3. 송신 중 플래그 초기화 (WSASend 중복 호출 방지용)
+        // 송신 중 플래그 초기화 (WSASend 중복 호출 방지용)
         sendFlag.store(0);
 
-        // 4. 링 버퍼 초기화
+        // 링 버퍼 초기화
         recvRingBuffer.ClearBuffer();
         sendRingBuffer.ClearBuffer();
 
-        // 5. Overlapped 구조체 및 전송 정보 초기화
+        // Overlapped 구조체 및 전송 정보 초기화
         memset(&recvOverlapped.overlapped, 0, sizeof(OVERLAPPED));
         memset(&sendOverlapped.overlapped, 0, sizeof(OVERLAPPED));
         memset(&releaseOverlapped.overlapped, 0, sizeof(OVERLAPPED));

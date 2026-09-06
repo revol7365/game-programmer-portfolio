@@ -21,7 +21,7 @@ namespace ChatPacket {
         *pPacket << type;           // 패킷 타입 (Payload 시작)
     }
 
-    // 1. 로그인 응답 (Server -> Client)
+    // 로그인 응답 (Server -> Client)
     inline void MakeLoginResLogin(Packet* pPacket, INT64 accountNo, BYTE status,
         const WCHAR* id, const WCHAR* nickname,
         const WCHAR* gameServerIP, USHORT gameServerPort,
@@ -38,7 +38,7 @@ namespace ChatPacket {
         *pPacket << chatServerPort;
     }
 
-    // 4. 하트비트 요청
+    // 하트비트 요청
     inline void MakeChatReqHeartbeat(Packet* pPacket) {
         InitPacket(pPacket, en_PACKET_CS_CHAT_REQ_HEARTBEAT);
     }

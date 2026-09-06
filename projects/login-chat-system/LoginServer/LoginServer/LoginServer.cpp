@@ -97,7 +97,7 @@ void LoginServer::contentThread(int threadIdx)
 {
 	while (!bTerminate)
 	{
-		// 1. 이벤트 대기
+		// 이벤트 대기
 		DWORD transferred = 0;
 		ULONG_PTR completionKey = 0;
 		LPOVERLAPPED overlapped = nullptr;
@@ -225,16 +225,16 @@ bool LoginServer::login(int threadIdx, Player& player, Packet* packet)
 	}
 	else
 	{
-		// 1. null 종료 보장
+		// null 종료 보장
 		char sessionKeyStr[129]{};
 		memcpy(sessionKeyStr, sessionKey, 64);
 		sessionKeyStr[64] = '\0';
 
-		// 2. 특수문자 이스케이프
+		// 특수문자 이스케이프
 		char escapedKey[257]{};
 		mysql_real_escape_string(mDBConn[threadIdx].GetConnection(), escapedKey, sessionKeyStr, (unsigned long)strlen(sessionKeyStr));
 
-		// 3. DB 조회
+		// DB 조회
 		char query[512];
 		sprintf_s(query, sizeof(query),
 			"SELECT `accountno`, `userid`, `usernick` "
@@ -264,7 +264,7 @@ bool LoginServer::login(int threadIdx, Player& player, Packet* packet)
 		}
 	}
 
-	// 4. 응답 패킷 전송
+	// 응답 패킷 전송
 	Packet* resPacket = Packet::packetMemoryPool.Alloc();
 	resPacket->Init();
 
@@ -283,7 +283,7 @@ void LoginServer::removePlayer(Player* player)
 {
 	DisConnect(player->GetSessionID());
 
-	// 2. 플레이어 리스트에서 제거
+	// 플레이어 리스트에서 제거
 	uint64_t sessionId = player->GetSessionID();
 	int tid = GetTargetThread(sessionId);
 	if (mPlayerMap[tid].erase(sessionId) > 0) {

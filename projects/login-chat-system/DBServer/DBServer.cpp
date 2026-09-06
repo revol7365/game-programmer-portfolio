@@ -273,7 +273,7 @@ void DBServer::HandleItemTradeTransaction(const DBQueryItemTrade& data)
 		return;
 	}
 
-	// 1. 구매자 돈 차감
+	// 구매자 돈 차감
 	sprintf_s(query, sizeof(query),
 		"UPDATE `player` SET `money` = `money` - %d WHERE `account_no` = %lld",
 		data.tradeMoney, data.toAccountNo);
@@ -285,7 +285,7 @@ void DBServer::HandleItemTradeTransaction(const DBQueryItemTrade& data)
 		return;
 	}
 
-	// 2. 판매자 돈 증가
+	// 판매자 돈 증가
 	sprintf_s(query, sizeof(query),
 		"UPDATE `player` SET `money` = `money` + %d WHERE `account_no` = %lld",
 		data.tradeMoney, data.fromAccountNo);
@@ -297,7 +297,7 @@ void DBServer::HandleItemTradeTransaction(const DBQueryItemTrade& data)
 		return;
 	}
 
-	// 3. 구매자 아이템 삽입
+	// 구매자 아이템 삽입
 	sprintf_s(query, sizeof(query),
 		"INSERT INTO `inventory` (`account_no`, `item_id`, `slot`, `price`) "
 		"VALUES (%lld, %d, %lld, %d)",
@@ -310,7 +310,7 @@ void DBServer::HandleItemTradeTransaction(const DBQueryItemTrade& data)
 		return;
 	}
 
-	// 4. 판매자 아이템 삭제
+	// 판매자 아이템 삭제
 	sprintf_s(query, sizeof(query),
 		"DELETE FROM `inventory` WHERE `account_no` = %lld AND `slot` = %lld",
 		data.fromAccountNo, data.fromItemSlot);
@@ -335,7 +335,7 @@ void DBServer::HandleItemTradeNoTransaction(const DBQueryItemTrade& data)
 {
 	char query[512];
 
-	// 1. 구매자 돈 차감
+	// 구매자 돈 차감
 	sprintf_s(query, sizeof(query),
 		"UPDATE `player` SET `money` = `money` - %d WHERE `account_no` = %lld",
 		data.tradeMoney, data.toAccountNo);
@@ -343,7 +343,7 @@ void DBServer::HandleItemTradeNoTransaction(const DBQueryItemTrade& data)
 		printf("[HandleItemTrade-RAW] 구매자 돈 차감 실패, Error: %s\n",
 			mysql_error(dbConn_.GetConnection()));
 
-	// 2. 판매자 돈 증가
+	// 판매자 돈 증가
 	sprintf_s(query, sizeof(query),
 		"UPDATE `player` SET `money` = `money` + %d WHERE `account_no` = %lld",
 		data.tradeMoney, data.fromAccountNo);
@@ -351,7 +351,7 @@ void DBServer::HandleItemTradeNoTransaction(const DBQueryItemTrade& data)
 		printf("[HandleItemTrade-RAW] 판매자 돈 증가 실패, Error: %s\n",
 			mysql_error(dbConn_.GetConnection()));
 
-	// 3. 구매자 아이템 삽입
+	// 구매자 아이템 삽입
 	sprintf_s(query, sizeof(query),
 		"INSERT INTO `inventory` (`account_no`, `item_id`, `slot`, `price`) "
 		"VALUES (%lld, %d, %lld, %d)",
@@ -360,7 +360,7 @@ void DBServer::HandleItemTradeNoTransaction(const DBQueryItemTrade& data)
 		printf("[HandleItemTrade-RAW] 아이템 삽입 실패, Error: %s\n",
 			mysql_error(dbConn_.GetConnection()));
 
-	// 4. 판매자 아이템 삭제
+	// 판매자 아이템 삭제
 	sprintf_s(query, sizeof(query),
 		"DELETE FROM `inventory` WHERE `account_no` = %lld AND `slot` = %lld",
 		data.fromAccountNo, data.fromItemSlot);
